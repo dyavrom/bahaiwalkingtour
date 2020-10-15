@@ -1,0 +1,21 @@
+
+/* Class = "UITextView"; text = "Welcome to the centenary tour of the visit to Washington DC of 'Abdu'l-Bahá, son of the Founder of the Bahá'í Faith, Bahá'u'lláh.\n\nThe Bahá'ís of Washington DC have organizing this self-guided tour to the sites that were visited by 'Abdu'l-Bahá. This tool provides textual information and the ability to navigate to each site using Apple Maps. \n\nFor more information, please visit www.dcbahai.org.\n"; ObjectID = "0Ep-sz-uVd"; */
+"0Ep-sz-uVd.text" = "Welcome to the centenary tour of the visit to Washington DC of 'Abdu'l-Bahá, son of the Founder of the Bahá'í Faith, Bahá'u'lláh.\n\nThe Bahá'ís of Washington DC have organizing this self-guided tour to the sites that were visited by 'Abdu'l-Bahá. This tool provides textual information and the ability to navigate to each site using Apple Maps. \n\nFor more information, please visit www.dcbahai.org.\n";
+
+/* Class = "UIButton"; normalTitle = "Credits"; ObjectID = "L5h-hg-7f6"; */
+"L5h-hg-7f6.normalTitle" = "Credits";
+
+/* Class = "UISegmentedControl"; Qo7-jS-2vo.segmentTitles[0] = "Standard"; ObjectID = "Qo7-jS-2vo"; */
+"Qo7-jS-2vo.segmentTitles[0]" = "Standard";
+
+/* Class = "UISegmentedControl"; Qo7-jS-2vo.segmentTitles[1] = "Satellite"; ObjectID = "Qo7-jS-2vo"; */
+"Qo7-jS-2vo.segmentTitles[1]" = "Satellite";
+
+/* Class = "UIButton"; normalTitle = "About this map"; ObjectID = "a0F-dU-sJq"; */
+"a0F-dU-sJq.normalTitle" = "About this map";
+
+/* Class = "UIButton"; normalTitle = "Learn More"; ObjectID = "gGS-04-KCW"; */
+"gGS-04-KCW.normalTitle" = "Learn More";
+
+/* Class = "UIButton"; normalTitle = "About"; ObjectID = "mnj-mh-xr8"; */
+"mnj-mh-xr8.normalTitle" = "About";
