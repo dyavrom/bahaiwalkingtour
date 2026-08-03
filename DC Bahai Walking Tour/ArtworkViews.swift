@@ -37,7 +37,12 @@ class ArtworkView: MKAnnotationView {
             if detailCalloutAccessoryView == nil {
                 detailCalloutAccessoryView = detailCallout
             }
-            (detailCalloutAccessoryView as! CustomArtworkCalloutView).setContent(title: artwork.subtitle!, description: artwork.locationDescription, blurb: artwork.blurbT,  artwork: artwork)
+            detailCallout.setContent(
+                address: artwork.address,
+                description: artwork.locationDescription,
+                blurb: artwork.blurb,
+                artwork: artwork
+            )
         }
     }
 }

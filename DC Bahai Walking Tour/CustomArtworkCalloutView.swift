@@ -1,112 +1,81 @@
-//  Copyright © 2020 Deeba Yavrom. All rights reserved.
-//
-
 import UIKit
 
+protocol UIViewControllerPresenter: AnyObject {
+    func presentDetails(of: Artwork)
+}
+
 class CustomArtworkCalloutView: UIView {
-    
-    //created with code instead of IBOutlets
-    
-    // label address
-    let titleLabel: UILabel = {
+
+    private let blurbLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont(name: "Heiti TC", size: 13)
-        //label.textColor = .secondaryLabel
-        label.textColor = .secondaryLabel
-        return label
-    }()
-    
-    //label blurb
-    let blurbT: UILabel = {
-        let label = UILabel()
-        label.font = UIFont(name: "Heiti TC", size: 13)
-      //  label.font = UIFont.systemFont(ofSize: 13, weight: UIFont.Weight.light)
-        label.numberOfLines = 3
+        label.font = UIFont.systemFont(ofSize: 13, weight: .semibold)
         label.textColor = .label
-        return label
-    }()
-    
-    //label description main text
-    let descriptionLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont(name: "Heiti TC", size: 13)
         label.numberOfLines = 2
-        label.textColor = .label
         return label
     }()
-    
-    
-    lazy var expandButton: UIButton = {
-        let btn = UIButton()
-        btn.setTitle("..tap to read more ↓", for: .normal)
-        btn.titleLabel?.font =  UIFont(name: "Heiti TC", size: 13)
-        btn.setTitleColor(.secondaryLabel, for: .normal)
-        btn.addTarget(self, action: #selector(expandClicked), for: .touchUpInside)
-        return btn
+
+    private let addressLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 12, weight: .regular)
+        label.textColor = .secondaryLabel
+        label.numberOfLines = 1
+        return label
     }()
-    
-    let contentStack: UIStackView = {
+
+    private let tapHintLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Tap to read more →"
+        label.font = UIFont.systemFont(ofSize: 11, weight: .medium)
+        label.textColor = .systemTeal
+        return label
+    }()
+
+    private let contentStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.distribution = .fill
-        stack.spacing = 3
+        stack.spacing = 4
         return stack
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    //weak to prevent reference cycle leading to memory leaks
+
     weak var presentingDelegate: UIViewControllerPresenter?
-    var artwork: Artwork?
-    func setupViews() {
-        //i prefer to create layout programmatically using AutoLayout instead of storyboards
-        self.addSubview(contentStack)
-        self.addSubview(expandButton)
+    private var artwork: Artwork?
+
+    private func setupViews() {
         contentStack.translatesAutoresizingMaskIntoConstraints = false
-        expandButton.translatesAutoresizingMaskIntoConstraints = false
-        
+        addSubview(contentStack)
+
         NSLayoutConstraint.activate([
-            contentStack.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            contentStack.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            contentStack.topAnchor.constraint(equalTo: self.topAnchor, constant: -16),
+            contentStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentStack.topAnchor.constraint(equalTo: topAnchor, constant: -12),
+            contentStack.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        
-        NSLayoutConstraint.activate([
-            expandButton.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            expandButton.trailingAnchor.constraint(lessThanOrEqualTo: self.trailingAnchor),
-            expandButton.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            expandButton.topAnchor.constraint(equalTo: contentStack.bottomAnchor, constant: -8)
-        ])
-        
-        contentStack.addArrangedSubview(blurbT)
-        contentStack.addArrangedSubview(titleLabel)
-        contentStack.addArrangedSubview(descriptionLabel)
-        
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(expandClicked))
-        self.addGestureRecognizer(gestureRecognizer) //comment this to disable whole popup being tappable
+
+        contentStack.addArrangedSubview(blurbLabel)
+        contentStack.addArrangedSubview(addressLabel)
+        contentStack.addArrangedSubview(tapHintLabel)
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(calloutTapped))
+        addGestureRecognizer(tap)
     }
-    
-    func setContent(title: String, description: String, blurb: String, artwork: Artwork) {
-        titleLabel.text = title
-        descriptionLabel.text = description
-        blurbT.text = blurb
+
+    func setContent(address: String, description: String, blurb: String, artwork: Artwork) {
+        blurbLabel.text = blurb
+        addressLabel.text = address
         self.artwork = artwork
     }
-    
-    @objc func expandClicked() {
-        if let artwork = artwork {
-            //delegete is our main ViewController which is able to show some child view controller
-            presentingDelegate?.presentDetails(of: artwork)
-        }
-    }
-}
 
-protocol UIViewControllerPresenter: class {
-    func presentDetails(of: Artwork)
+    @objc private func calloutTapped() {
+        guard let artwork = artwork else { return }
+        presentingDelegate?.presentDetails(of: artwork)
+    }
 }

@@ -1,91 +1,63 @@
 import Foundation
-import Contacts
 import MapKit
 
 class Artwork: NSObject, MKAnnotation {
-let title: String?
-let blurbT: String
-let locationDescription: String
-let locationURL: String
-let discipline: String
-let coordinate: CLLocationCoordinate2D
+    let title: String?
+    let blurb: String
+    let locationDescription: String
+    let address: String
+    let category: String
+    let coordinate: CLLocationCoordinate2D
 
-    init(title: String, locationDescription: String, locationURL: String, discipline: String, blurbT: String, coordinate: CLLocationCoordinate2D) {
-  self.title = title
-        self.blurbT = blurbT
-  self.locationDescription = locationDescription
-  self.locationURL = locationURL
-  self.discipline = discipline
-  self.coordinate = coordinate
-  
-    super.init()
-  }
-    
-    var blurb: String? {
-      return blurbT
+    init(title: String, blurb: String, locationDescription: String, address: String, category: String, coordinate: CLLocationCoordinate2D) {
+        self.title = title
+        self.blurb = blurb
+        self.locationDescription = locationDescription
+        self.address = address
+        self.category = category
+        self.coordinate = coordinate
+        super.init()
     }
-      
-    var subtitle: String? {
-        return locationURL
-    }
-    
-    var locationlink: String? {
-      return locationURL
-    }
-    
-    
-  init?(json: [Any]) {
-    // 1
-    if let title = json[1] as? String {
-      self.title = title
-    } else {
-      self.title = "No Title"
-    }
-    // json[11] is the long description
-    //self.locationName = json[11] as! String
-    // json[12] is the short location string
-    self.blurbT = json[2] as! String
-    self.locationDescription = json[9] as! String
 
-    self.discipline = json[10] as! String
-    self.locationURL = json[3] as! String
- 
-    // 2
-    if let latitude = Double(json[7] as! String),
-      let longitude = Double(json[8] as! String) {
-      self.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-    } else {
-      self.coordinate = CLLocationCoordinate2D()
+    convenience init?(dict: [String: Any]) {
+        guard
+            let title = dict["title"] as? String,
+            let blurb = dict["blurb"] as? String,
+            let description = dict["description"] as? String,
+            let address = dict["address"] as? String,
+            let category = dict["category"] as? String,
+            let latitude = dict["latitude"] as? Double,
+            let longitude = dict["longitude"] as? Double
+        else { return nil }
+
+        self.init(
+            title: title,
+            blurb: blurb,
+            locationDescription: description,
+            address: address,
+            category: category,
+            coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        )
     }
-  }
 
-  // pinTintColor for disciplines: Sculpture, Plaque, Mural, Monument, other
-  var markerTintColor: UIColor  {
-    switch discipline {
-    case "Monument":
-      return .red
-    case "Mural":
-      return .cyan
-    case "Plaque":
-      return .blue
-    case "Sculpture":
-      return .purple
-    default:
-      return .green
+    var subtitle: String? { address }
+
+    var markerTintColor: UIColor {
+        switch category.lowercased() {
+        case "monument": return .systemRed
+        case "mural":    return .systemTeal
+        case "plaque":   return .systemBlue
+        case "sculpture": return .systemPurple
+        default:         return UIColor(red: 0.18, green: 0.49, blue: 0.40, alpha: 1)
+        }
     }
-  }
 
-  var imageName: String? {
-    if discipline == "Mural" { return "Flag" }
-    return "Flag"
-  }
+    var imageName: String? { "Flag" }
 
-  // Annotation right callout accessory opens this mapItem in Maps app
-  func mapItem() -> MKMapItem {
-    let addressDict = [CNPostalAddressStreetKey: subtitle!]
-    let placemark = MKPlacemark(coordinate: coordinate, addressDictionary: addressDict)
-    let mapItem = MKMapItem(placemark: placemark)
-    mapItem.name = title
-    return mapItem
-  }
+    func mapItem() -> MKMapItem {
+        let placemark = MKPlacemark(coordinate: coordinate)
+        let item = MKMapItem(placemark: placemark)
+        item.name = title
+        return item
+    }
 }
